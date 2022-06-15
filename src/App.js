@@ -3,9 +3,8 @@ import axios from 'axios';
 
 function App() {
     const [data, setData] = useState({});
-    // const [location, setLocation] = useState('');
     const [city, setCity] = useState('');
-    const [list, setList] = useState([]);
+    // const [list, setList] = useState([]);
     const key = process.env.REACT_APP_API_KEY;
     // const lat = 29.424349;
     // const lon = -98.491142;
@@ -19,10 +18,10 @@ function App() {
             axios.get(urlCity)
                 .then((response) => {
                     setData(response.data);
-                    setList(response.data.list);
+                    // setList(response.data.list);
                     setCity('');
                     console.log(response.data);
-                    console.log(response.data.list);
+                    // console.log(response.data.list);
                 })
         }
     }
@@ -41,37 +40,33 @@ function App() {
         <div className="container">
             <div className="top">
                 <div className="location text">
-                    <h2>{data.name}</h2>
+                    {data.city ? <h2>{data.city.name}</h2> : null}
                 </div>
                 <div className="temp text">
-                    {data.main ? <h3>{data.main.temp.toFixed()}°F</h3> : null}
+                    {data.list ? <h3>{data.list[0].main.temp.toFixed()}°F</h3> : null}
                 </div>
                 <div className="description text">
-                    {data.weather ? <h3>{data.weather[0].main}</h3> : null}
+                    {data.list ? <h3>{data.list[0].weather[0].main}</h3> : null}
                 </div>
             </div>
 
 
-            {list.map(day => (
-                <p>
-                    {day.dt_txt}
-                </p>
-            ))}
 
 
 
-            {data.name !== undefined &&
+
+            {data.city !== undefined &&
                 <div className="bottom">
                     <div className="feels">
-                        {data.main ? <p className="bold text">{data.main.feels_like.toFixed()}°F</p> : null}
+                        {data.list ? <p className="bold text">{data.list[0].main.feels_like.toFixed()}°F</p> : null}
                         <p className='text'>Feels Like</p>
                     </div>
                     <div className="humidity">
-                        {data.main ? <p className='bold text'>{data.main.humidity}%</p> : null}
+                        {data.list ? <p className='bold text'>{data.list[0].main.humidity}%</p> : null}
                         <p className='text'>Humidity</p>
                     </div>
                     <div className="wind">
-                        {data.wind ? <p className="bold text">{data.wind.speed.toFixed()}</p> : null}
+                        {data.list ? <p className="bold text">{data.list[0].wind.speed.toFixed()} MPH</p> : null}
                         <p className='text'>Wind Speed</p>
                     </div>
                 </div>
@@ -86,4 +81,19 @@ export default App;
 
 /*
 https://api.openweathermap.org/data/2.5/forecast?lat=29.424349&lon=-98.491142&appid=e36460df7ac92f34e5766229d1a0601e
- */                                  
+
+
+Will return to figure out how to display 5 day forecast
+Receiving 401 error when trying to pull from api
+    {data.city !== undefined &&
+        <div className="forecast">
+            <div className="container">
+                {list.map(day => (
+                    <p>
+                        {day.dt_txt}
+                    </p>
+                ))}
+            </div>
+        </div>
+    }
+ */
