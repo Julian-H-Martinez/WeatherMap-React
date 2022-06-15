@@ -3,24 +3,26 @@ import axios from 'axios';
 
 function App() {
     const [data, setData] = useState({});
-    const [location, setLocation] = useState('');
+    // const [location, setLocation] = useState('');
     const [city, setCity] = useState('');
-    const [state, setState] = useState('');
+    const [list, setList] = useState([]);
     const key = process.env.REACT_APP_API_KEY;
-    const lat = 29.424349;
-    const lon = -98.491142;
+    // const lat = 29.424349;
+    // const lon = -98.491142;
 
-    const urlGeo = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}&units=imperial`;
-    const urlCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&units=imperial`;
-    const urlCityState = `https://api.openweathermap.org/data/2.5/weather?q=${city},${state}&appid=${key}&units=imperial`
+    // const urlGeo = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}&units=imperial`;
+    const urlCity = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&exclude=minutely,hourly,alerts&cnt=5&appid=${key}`;
+    // const urlCityState = `https://api.openweathermap.org/data/2.5/weather?q=${city},${state}&appid=${key}&units=imperial`
 
     const searchLocation = (e) => {
         if(e.key === 'Enter'){
             axios.get(urlCity)
                 .then((response) => {
                     setData(response.data);
+                    setList(response.data.list);
                     setCity('');
                     console.log(response.data);
+                    console.log(response.data.list);
                 })
         }
     }
@@ -38,29 +40,38 @@ function App() {
         </div>
         <div className="container">
             <div className="top">
-                <div className="location">
+                <div className="location text">
                     <h2>{data.name}</h2>
                 </div>
-                <div className="temp">
-                    {data.main ? <h4>{data.main.temp.toFixed()}°F</h4> : null}
+                <div className="temp text">
+                    {data.main ? <h3>{data.main.temp.toFixed()}°F</h3> : null}
                 </div>
-                <div className="description">
-                    {data.weather ? <h5>{data.weather[0].main}</h5> : null}
+                <div className="description text">
+                    {data.weather ? <h3>{data.weather[0].main}</h3> : null}
                 </div>
             </div>
+
+
+            {list.map(day => (
+                <p>
+                    {day.dt_txt}
+                </p>
+            ))}
+
+
 
             {data.name !== undefined &&
                 <div className="bottom">
                     <div className="feels">
-                        <p className="bold text">110°F</p>
+                        {data.main ? <p className="bold text">{data.main.feels_like.toFixed()}°F</p> : null}
                         <p className='text'>Feels Like</p>
                     </div>
                     <div className="humidity">
-                        <p className='bold text'>85%</p>
+                        {data.main ? <p className='bold text'>{data.main.humidity}%</p> : null}
                         <p className='text'>Humidity</p>
                     </div>
                     <div className="wind">
-                        <p className="bold text">2mph</p>
+                        {data.wind ? <p className="bold text">{data.wind.speed.toFixed()}</p> : null}
                         <p className='text'>Wind Speed</p>
                     </div>
                 </div>
